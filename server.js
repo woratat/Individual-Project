@@ -1,7 +1,7 @@
 var http = require("http");
 var url = require("url");
 
-const { getRes, getMenu, getOrder, select_menu } = require("./food.js");
+const { getRes, getMenu, getOrder, createOrder } = require("./food.js");
 
 http
   .createServer(function (req, res) {
@@ -14,6 +14,17 @@ http
       case "/getRes":
         try {
           data = getRes();
+          message = "success";
+        } catch (err) {
+          message += err;
+          status = 404;
+          console.log(err);
+        }
+        break;
+
+        case "/getCustomer":
+        try {
+          data = getCustomer(request_path.query.customer_id);
           message = "success";
         } catch (err) {
           message += err;
@@ -44,7 +55,7 @@ http
         }
         break;
 
-      case "/select_menu":
+      case "/createOrder":
         if (req.method == "POST") {
           let req_input = [];
           req
@@ -54,7 +65,7 @@ http
             .on("end", () => {
               let json_data = JSON.parse(Buffer.concat(req_input).toString());
               try {
-                data = select_menu(json_data);
+                data = createOrder(json_data);
                 message = "success";
               } catch (err) {
                 message += err;
@@ -65,27 +76,6 @@ http
           throw "method not match";
         }
         break;
-
-      // case "/createOrder":
-      // if (req.method == "POST") {
-      //   let req_input = [];
-      //   req
-      //     .on("data", (chunk) => {
-      //       req_input.push(chunk);
-      //     })
-      //     .on("end", () => {
-      //       let json_data = JSON.parse(Buffer.concat(req_input).toString());
-      //       try {
-      //         data = createOrder();
-      //       } catch (err) {
-      //         message += err;
-      //         console.log(err);
-      //       }
-      //     });
-      // } else {
-      //   throw "method not match";
-      // }
-      // break;
 
       default:
         status = 404;

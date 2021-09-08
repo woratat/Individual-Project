@@ -1,8 +1,7 @@
 var fs = require("fs");
 const { restaurants } = require("./restaurant");
-const { customers } = require("./customer");
+const { customers, Customer } = require("./customer");
 const { menus } = require("./menu");
-const { orders } = require("./order");
 
 var orders_menu = [];
 var currentdate = new Date();
@@ -71,26 +70,32 @@ getOrder = (customer_id) => {
 };
 
 createOrder = (json_data) => {
-  if (Object.keys(json_data).length != 0) {
-    json_data.order_status = "pending";
-    json_data.create_date =
-      "Date " +
-      currentdate.getDate() +
-      "-" +
-      currentdate.getMonth() +
-      "-" +
-      currentdate.getFullYear() +
-      "  Time " +
-      currentdate.getHours() +
-      ":" +
-      currentdate.getMinutes() +
-      ":" +
-      currentdate.getSeconds();
-    orders_menu.push(json_data);
-    console.log(orders_menu);
-  } else {
-    throw "Error! No data sent.";
-  }
+  customers.forEach(x => {
+    if(x.id == json_data.customer_id){
+      json_data.order_status = "pending";
+      json_data.create_date =
+        "Date " +
+        currentdate.getDate() +
+        "-" +
+        currentdate.getMonth() +
+        "-" +
+        currentdate.getFullYear() +
+        "  Time " +
+        currentdate.getHours() +
+        ":" +
+        currentdate.getMinutes() +
+        ":" +
+        currentdate.getSeconds();
+      orders_menu.push(json_data);
+      console.log(orders_menu);
+    }
+  })
+};
+
+createCustomer = (json_data) => {
+  console.log(json_data);
+  customers.push(new Customer(json_data.id, json_data.firstname, json_data.lastname, json_data.email, json_data.mobile, json_data.address));
+  console.log(customers);
 };
 
 module.exports = {
@@ -98,5 +103,5 @@ module.exports = {
   getMenu: getMenu,
   getOrder: getOrder,
   createOrder: createOrder,
-  // orders_menu: orders_menu,
+  createCustomer: createCustomer,
 };

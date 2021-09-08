@@ -1,7 +1,7 @@
 var http = require("http");
 var url = require("url");
 
-const { getRes, getMenu, getOrder, createOrder } = require("./food.js");
+const { getRes, getMenu, getOrder, createOrder, createCustomer } = require("./food.js");
 
 http
   .createServer(function (req, res) {
@@ -66,6 +66,28 @@ http
               let json_data = JSON.parse(Buffer.concat(req_input).toString());
               try {
                 data = createOrder(json_data);
+                message = "success";
+              } catch (err) {
+                message += err;
+                console.log(err);
+              }
+            });
+        } else {
+          throw "method not match";
+        }
+        break;
+
+        case "/createCustomer":
+        if (req.method == "POST") {
+          let req_input = [];
+          req
+            .on("data", (chunk) => {
+              req_input.push(chunk);
+            })
+            .on("end", () => {
+              let json_data = JSON.parse(Buffer.concat(req_input).toString());
+              try {
+                data = createCustomer(json_data);
                 message = "success";
               } catch (err) {
                 message += err;

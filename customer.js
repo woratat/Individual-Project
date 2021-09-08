@@ -21,5 +21,6 @@ customers.push(
 // console.table(customers);
 
 module.exports = {
-  customers: customers
+  customers: customers,
+  Customer: Customer
 };

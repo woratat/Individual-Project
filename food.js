@@ -2,33 +2,35 @@ var fs = require("fs");
 const { restaurants } = require("./restaurant");
 const { customers } = require("./customer");
 const { menus } = require("./menu");
+const { orders } = require("./order");
 
 var orders_menu = [];
+var currentdate = new Date();
 
 getRes = () => {
-  if(restaurants.length != 0){
+  if (restaurants.length != 0) {
     return restaurants;
-  }else{
-    throw 'Error! There is no restaurant';
+  } else {
+    throw "Error! There is no restaurant";
   }
 };
 
-getCustomer = (customer_id) =>{
+getCustomer = (customer_id) => {
   let data = [];
   let reg = /^[\d]+$/;
   if (reg.test(customer_id) == true) {
     let id = reg.exec(customer_id)[0];
-    customers.forEach((x)=>{
-      if(x.id == id){
+    customers.forEach((x) => {
+      if (x.id == id) {
         data.push(x);
         console.log(data);
       }
-    })
-  }else{
+    });
+  } else {
     throw "Error! Invalid customer id.";
   }
   return data;
-}
+};
 
 getMenu = (res_id) => {
   let data;
@@ -70,6 +72,20 @@ getOrder = (customer_id) => {
 
 createOrder = (json_data) => {
   if (Object.keys(json_data).length != 0) {
+    json_data.order_status = "pending";
+    json_data.create_date =
+      "Date " +
+      currentdate.getDate() +
+      "-" +
+      currentdate.getMonth() +
+      "-" +
+      currentdate.getFullYear() +
+      "  Time " +
+      currentdate.getHours() +
+      ":" +
+      currentdate.getMinutes() +
+      ":" +
+      currentdate.getSeconds();
     orders_menu.push(json_data);
     console.log(orders_menu);
   } else {
@@ -82,4 +98,5 @@ module.exports = {
   getMenu: getMenu,
   getOrder: getOrder,
   createOrder: createOrder,
+  // orders_menu: orders_menu,
 };

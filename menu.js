@@ -1,5 +1,3 @@
-const {restaurants} = require('./restaurant')
-
 const Menu = function (name, price, parent_res) {
   this.name = name;
   this.price = price;

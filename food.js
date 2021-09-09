@@ -83,7 +83,7 @@ getOrderMenu = (order_id) => {
           order_id: n.order_id,
           menu_id: n.menu_id,
           qty: n.qty,
-          total_price: order_menu[index].getTotal(n.order_id) + ' Baht'
+          total_price: order_menu[index].getTotal(n.order_id) + " Baht",
         });
         console.log(data);
       }
@@ -95,17 +95,28 @@ getOrderMenu = (order_id) => {
 };
 
 createOrder = (json_data) => {
+  let data = [];
+  let num = 0;
   customers.forEach((x) => {
     if (x.id == json_data.customer_id) {
       orders.push(new Order(order_id, json_data.customer_id, json_data.res_id));
       console.log(orders);
+      num = order_id;
       createOrderMenu(order_menu_id, order_id, json_data);
       order_id++;
     }
-  });  
+  });
+  orders.forEach((n) => {
+    if (n.order_id == num) {
+      data = n;
+    }
+  });
+  return data;
 };
 
 createCustomer = (json_data) => {
+  let data = [];
+  let num = 0;
   let reg_name = /^[a-zA-Z ]{3,}$/;
   let data_firstname = json_data.firstname;
   let data_lastname = json_data.lastname;
@@ -148,6 +159,7 @@ createCustomer = (json_data) => {
                 json_data.address
               )
             );
+            num = customer_id;
           } else {
             throw "Error! Some information are already exist.";
           }
@@ -163,8 +175,17 @@ createCustomer = (json_data) => {
   } else {
     throw "Error! Invalid first name or lastname.";
   }
+
+  customers.forEach((customer) => {
+    if (customer.id == num) {
+      data = customer;
+    }
+  });
+
   customer_id++;
   console.log(customers);
+
+  return data;
 };
 
 createOrderMenu = (order_menu_id, order_id, json_data) => {

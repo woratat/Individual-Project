@@ -1,21 +1,25 @@
 var currentdate = new Date();
 
-const Order = function (customer_id, res_id, menu_id) {
+const Order = function (id, customer_id, res_id) {
+  this.order_id = id;
   this.customer_id = customer_id;
   this.res_id = res_id;
-  this.menu_id = menu_id;
   this.order_status = "pending";
-  this.create_date =
-    currentdate.getDate() +
+  this.create_date = "Date "+
+  currentdate.getDate() +
     "-" +
     currentdate.getMonth() +
     "-" +
-    currentdate.getFullYear();
+    currentdate.getFullYear() +
+    " Time " +
+    currentdate.getHours() +
+    ":" +
+    currentdate.getMinutes() +
+    ":" +
+    currentdate.getSeconds();
 };
 
 var orders = new Array();
-
-//   console.table(orders);
 
 module.exports = {
   orders: orders,

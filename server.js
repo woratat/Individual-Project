@@ -1,7 +1,13 @@
 var http = require("http");
 var url = require("url");
 
-const { getRes, getMenu, getOrder, createOrder, createCustomer } = require("./food.js");
+const {
+  getRes,
+  getMenu,
+  getOrder,
+  createOrder,
+  createCustomer,
+} = require("./food.js");
 
 http
   .createServer(function (req, res) {
@@ -9,6 +15,7 @@ http
     var message = "";
     var data = "";
     var status = 200;
+
 
     switch (request_path.pathname) {
       case "/getRes":
@@ -22,7 +29,7 @@ http
         }
         break;
 
-        case "/getCustomer":
+      case "/getCustomer":
         try {
           data = getCustomer(request_path.query.customer_id);
           message = "success";
@@ -55,6 +62,17 @@ http
         }
         break;
 
+      case "/getOrderMenu":
+        try {
+          data = getOrderMenu((request_path.query.order_id));
+          message = "success";
+        } catch (err) {
+          message += err;
+          status = 404;
+          console.log(err);
+        }
+        break;
+
       case "/createOrder":
         if (req.method == "POST") {
           let req_input = [];
@@ -77,7 +95,7 @@ http
         }
         break;
 
-        case "/createCustomer":
+      case "/createCustomer":
         if (req.method == "POST") {
           let req_input = [];
           req

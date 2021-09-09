@@ -4,6 +4,7 @@ const { restaurants } = require("./restaurant");
 const { customers, Customer } = require("./customer");
 const { orders, Order } = require("./order");
 const { order_menu, OrderMenu } = require("./order_menu");
+const customer = require("./customer");
 
 var order_id = 1;
 var customer_id = 4;
@@ -97,21 +98,40 @@ getOrderMenu = (order_id) => {
 createOrder = (json_data) => {
   let data = [];
   let num = 0;
-  customers.forEach((x) => {
-    if (x.id == json_data.customer_id) {
-      orders.push(new Order(order_id, json_data.customer_id, json_data.res_id));
-      console.log(orders);
-      num = order_id;
-      createOrderMenu(order_menu_id, order_id, json_data);
-      order_id++;
+  let reg = /^[\d]+$/;
+  if (reg.test(json_data.customer_id) == true) {
+    if (reg.test(json_data.res_id) == true) {
+      if (json_data.menu_id.length != 0) {
+        if (json_data.qty.length != 0) {
+          customers.forEach((x) => {
+            if (x.id == json_data.customer_id) {
+              orders.push(
+                new Order(order_id, json_data.customer_id, json_data.res_id)
+              );
+              console.log(orders);
+              num = order_id;
+              createOrderMenu(order_menu_id, order_id, json_data);
+              order_id++;
+            }
+          });
+          orders.forEach((n) => {
+            if (n.order_id == num) {
+              data = n;
+            }
+          });
+          return data;
+        } else {
+          throw "Error! Quantity is empty.";
+        }
+      } else {
+        throw "Error! Menu id is empty.";
+      }
+    } else {
+      throw "Error! Invalid input of restaurant id.";
     }
-  });
-  orders.forEach((n) => {
-    if (n.order_id == num) {
-      data = n;
-    }
-  });
-  return data;
+  } else {
+    throw "Error! Invalid input of customer id.";
+  }
 };
 
 createCustomer = (json_data) => {
@@ -189,29 +209,68 @@ createCustomer = (json_data) => {
 };
 
 createOrderMenu = (order_menu_id, order_id, json_data) => {
-  orders.forEach((x) => {
-    if (x.order_id == order_id) {
-      order_menu.push(
-        new OrderMenu(order_menu_id, order_id, json_data.menu_id, json_data.qty)
-      );
-      console.log(order_menu);
-      order_menu_id++;
-    }
-  });
+  let reg = /^[\d]+$/;
+  if (reg.test(order_id) == true && reg.test(order_menu_id) == true) {
+    orders.forEach((x) => {
+      if (x.order_id == order_id) {
+        order_menu.push(
+          new OrderMenu(
+            order_menu_id,
+            order_id,
+            json_data.menu_id,
+            json_data.qty
+          )
+        );
+        console.log(order_menu);
+        order_menu_id++;
+      }
+    });
+  }
 };
 
-deleteOrder = (order_id) =>{
-  orders.forEach((order, index)=>{
-    if(order.order_id == order_id){
-      orders.splice(index, 1);
+deleteOrder = (order_id) => {
+  let check = true;
+  let reg = /^[\d]+$/;
+  if (reg.test(order_id) == true) {
+    orders.forEach((order, index) => {
+      if (order.order_id == order_id) {
+        orders.splice(index, 1);
+        check = false;
+      }
+    });
+    order_menu.forEach((om, index) => {
+      if (om.order_id == order_id) {
+        order_menu.splice(index, 1);
+      }
+    });
+    if(check == true){
+      return `Order id ${customer_id} can not be found.`
     }
-  })
-  order_menu.forEach((om, index)=>{
-    if(om.order_id == order_id){
-      order_menu.splice(index, 1);
+    console.log(orders);
+    return `Order id ${order_id} has been deleted.`;
+  } else {
+    throw "Error! Invalid input of delete order function.";
+  }
+};
+
+deleteCustomer = (customer_id) =>{
+  let check = true;
+  let reg = /^[\d]+$/;
+  if (reg.test(customer_id) == true) {
+    customers.forEach((cus, index)=>{
+      if(cus.id == customer_id){
+        customers.splice(index, 1);
+        console.log(customers);
+        check = false;
+      }
+    })
+    if(check == true){
+      return `Customer id ${customer_id} can not be found.`
     }
-  })
-  return `Order No.${order_id} has been deleted.`
+    return `Customer id ${customer_id} has been deleted.`;
+  } else {
+    throw "Error! Invalid input of delete customer function.";
+  }
 }
 
 module.exports = {
@@ -220,4 +279,6 @@ module.exports = {
   getOrder: getOrder,
   createOrder: createOrder,
   createCustomer: createCustomer,
+  deleteOrder: deleteOrder,
+  deleteCustomer: deleteCustomer
 };

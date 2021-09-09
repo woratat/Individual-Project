@@ -7,6 +7,8 @@ const {
   getOrder,
   createOrder,
   createCustomer,
+  deleteOrder,
+  deleteCustomer
 } = require("./food.js");
 
 http
@@ -139,6 +141,19 @@ http
       case "/deleteOrder":
         try {
           response_object.data = deleteOrder(request_path.query.order_id);
+          response_object.message = "success";
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(response_object));
+        } catch (err) {
+          message += err;
+          status = 400;
+          console.log(err);
+        }
+        break;
+
+        case "/deleteCustomer":
+        try {
+          response_object.data = deleteCustomer(request_path.query.customer_id);
           response_object.message = "success";
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify(response_object));

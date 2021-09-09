@@ -77,7 +77,7 @@ http
 
       case "/getOrderMenu":
         try {
-          response_object.data = getOrderMenu((request_path.query.order_id));
+          response_object.data = getOrderMenu(request_path.query.order_id);
           response_object.message = "success";
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify(response_object));
@@ -133,6 +133,19 @@ http
             });
         } else {
           throw "method not match";
+        }
+        break;
+
+      case "/deleteOrder":
+        try {
+          response_object.data = deleteOrder(request_path.query.order_id);
+          response_object.message = "success";
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify(response_object));
+        } catch (err) {
+          message += err;
+          status = 400;
+          console.log(err);
         }
         break;
 

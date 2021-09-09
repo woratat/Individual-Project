@@ -200,6 +200,20 @@ createOrderMenu = (order_menu_id, order_id, json_data) => {
   });
 };
 
+deleteOrder = (order_id) =>{
+  orders.forEach((order, index)=>{
+    if(order.order_id == order_id){
+      orders.splice(index, 1);
+    }
+  })
+  order_menu.forEach((om, index)=>{
+    if(om.order_id == order_id){
+      order_menu.splice(index, 1);
+    }
+  })
+  return `Order No.${order_id} has been deleted.`
+}
+
 module.exports = {
   getRes: getRes,
   getMenu: getMenu,
